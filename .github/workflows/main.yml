@@ -14,7 +14,10 @@ jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
     steps:
-      - uses: lomi525/py-lambda-action@master
+      - name: Checkout source code.   # 레포지토리 체크아웃
+        uses: actions/checkout@master
+      - name : deploy
+        uses: lomi525/py-lambda-action@master
         with:
           package: lambda.zip
           AWS_REGION: ${{ secrets.AWS_REGION }}
