@@ -17,7 +17,11 @@ jobs:
       - name: Checkout source code.   # 레포지토리 체크아웃
         uses: actions/checkout@master
       - name : deploy
-        uses: lomi525/py-lambda-action@master
+        uses: lomi525/py-lambda-action@master        
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           package: lambda.zip
           AWS_REGION: ${{ secrets.AWS_REGION }}
