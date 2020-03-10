@@ -14,7 +14,7 @@ jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
     steps:
-      - uses: mariamrf/py-lambda-action@master
+      - uses: lomi525/py-lambda-action@master
         with:
           package: lambda.zip
           AWS_REGION: ${{ secrets.AWS_REGION }}
