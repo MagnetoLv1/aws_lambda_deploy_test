@@ -9,15 +9,19 @@ on:
     branches:
       - master
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel1
 jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
     steps:
-      - uses: mariamrf/py-lambda-action@master
+      - name: Checkout source code.   # 레포지토리 체크아웃
+        uses: actions/checkout@master
+      - name : deploy
+        uses: lomi525/py-lambda-action@master
         with:
           package: lambda.zip
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          LAMBDA_FUNCTION_NAME: hello
+          LAMBDA_FUNCTION_NAME: lambda_function.lambda_handler
+          LAMBDA_LAYER_ARN: bs4_requrests_layer
