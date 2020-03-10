@@ -9,7 +9,7 @@ on:
     branches:
       - master
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel d
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel ds
 jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
