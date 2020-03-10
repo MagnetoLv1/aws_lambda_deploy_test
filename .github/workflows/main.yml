@@ -1,0 +1,25 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request 
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy-lambda:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: echo "THIS IS A TEST PACKAGE" > file.txt
+      - run: zip lambda.zip file.txt
+      - uses: yvesgurcan/deploy-lambda-function
+        with:
+          package: lambda.zip
+          function-name: lambda_test
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
