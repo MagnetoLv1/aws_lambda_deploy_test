@@ -14,13 +14,10 @@ jobs:
   deploy-lambda:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - run: echo "requires" > file.txt
-      - run: zip lambda.zip file.txt
-      - uses: yvesgurcan/deploy-lambda-function@v0.0.5
+      - uses: mariamrf/py-lambda-action@master
         with:
           package: lambda.zip
-          function-name: hello
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          LAMBDA_FUNCTION_NAME: hello
