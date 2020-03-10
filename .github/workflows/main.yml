@@ -16,16 +16,13 @@ jobs:
     steps:
       - name: Checkout source code.   # 레포지토리 체크아웃
         uses: actions/checkout@master
+        
       - name : deploy
-        uses: lomi525/py-lambda-action@master        
+        run: zip -r code.zip . -x \*.git\*
+      - name : update                    
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        with:
-          package: lambda.zip
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_SECRET_ID: ${{ secrets.AWS_SECRET_ID }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          LAMBDA_FUNCTION_NAME: lambda_function.lambda_handler
-          LAMBDA_LAYER_ARN: bs4_requrests_layer
+        run: aws lambda update-function-code --function-name test_function --zip-file fileb://code.zip
+            
