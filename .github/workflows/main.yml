@@ -27,7 +27,7 @@ jobs:
                   AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
                   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_SECRET_ID }}
                   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-              run: aws lambda get-function --function-name python_crawling2 --quiet
+              run: aws lambda get-function --function-name python_crawling2 --only-show-errors
             
             - name: update2
               run: echo toJson(step.check.outputs)
