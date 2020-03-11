@@ -27,6 +27,12 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
         run: aws lambda get-layer-version --layer-name python38_bs4_requests --version-number 2
         
+        
+      - name: The job has failed
+        if: failure()
+        run: echo "failure"
+        
+        
       - name : update                    
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
