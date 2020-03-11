@@ -42,3 +42,7 @@ def lambda_handler(event, context):
         'body': sitename,
         'data': data,
     }
+
+
+if __name__ == '__main__':
+    lambda_handler(None, None)
