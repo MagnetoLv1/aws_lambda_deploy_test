@@ -30,9 +30,7 @@ jobs:
               run: aws lambda get-function --function-name python_crawling2  --output text  |  base64 -d
             
             - name: update2
-              env:
-                  JOB_CONTEXT: ${{ toJson(step.check.outputs) }}
-              run: echo "$JOB_CONTEXT"
+              run: echo "${{ toJson(step.check.outputs) }}"
               
             - name: update
               env:
