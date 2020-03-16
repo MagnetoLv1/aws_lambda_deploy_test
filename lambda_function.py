@@ -6,7 +6,7 @@ from datetime import datetime
 import time
 
 
-# MySQL Connection 연결
+# MySQL Connection 연결1
 conn = pymysql.connect(host='database-1.chilgjy3o3zp.ap-northeast-2.rds.amazonaws.com', user='admin', password='epdlxjqpdltm-1',
                        db='innodb', charset='utf8')
 
