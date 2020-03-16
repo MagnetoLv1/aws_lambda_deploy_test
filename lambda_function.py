@@ -58,7 +58,7 @@ def lambda_handler(event, context):
             writed_at
         ))
 
-    sql = "insert into posts (site,title,description,url,image,like_cnt,view_cnt,comment_cnt,writer, writed_at) values (%s, %s, %s,%s, %s, %s,%s, %s, %s, %s)"
+    sql = "insert into posts (site,title,description,url,image,like_cnt,view_cnt,comment_cnt,writer, writed_at) values (%s, %s, %s,%s, %s, %s,%s, %s, %s, %s) ON DUPLICATE KEY UPDATE view_cnt = VALUES(view_cnt), comment_cnt = VALUES(comment_cnt)"
 
     # print(data)
     curs.executemany(sql, data)
