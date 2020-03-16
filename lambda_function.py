@@ -34,7 +34,6 @@ def lambda_handler(event, context):
         num = tr.find('td', class_='list_num').string
         title = tr.find('td', class_='sbj').a.string
         url = domain + tr.find('td', class_='sbj').a['href']
-        # comment222 = list(tr.find('td', class_='sbj').children)
         sbj = list(tr.find('td', class_='sbj').children)
         comment_cnt = str(
             sbj[len(sbj)-1].string).replace('[', '').replace(']', '').replace(' ', '')
@@ -47,6 +46,7 @@ def lambda_handler(event, context):
 
         data.append((
             1,
+            num,
             title,
             '',
             url,
@@ -58,7 +58,7 @@ def lambda_handler(event, context):
             writed_at
         ))
 
-    sql = "insert into posts (site,title,description,url,image,like_cnt,view_cnt,comment_cnt,writer, writed_at) values (%s, %s, %s,%s, %s, %s,%s, %s, %s, %s) ON DUPLICATE KEY UPDATE view_cnt = VALUES(view_cnt), comment_cnt = VALUES(comment_cnt)"
+    sql = "insert into posts (site,num, title,description,url,image,like_cnt,view_cnt,comment_cnt,writer, writed_at) values (%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s) ON DUPLICATE KEY UPDATE view_cnt = VALUES(view_cnt), comment_cnt = VALUES(comment_cnt)"
 
     # print(data)
     curs.executemany(sql, data)
