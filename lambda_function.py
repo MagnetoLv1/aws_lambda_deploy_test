@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import time
+import re
 
 
 # MySQL Connection 연결12
@@ -11,24 +12,24 @@ conn = pymysql.connect(host='database-1.chilgjy3o3zp.ap-northeast-2.rds.amazonaw
                        db='innodb', charset='utf8')
 
 # Connection 으로부터 Cursor 생성
-curs = conn.cursor()
 
 domain = 'http://www.slrclub.com'
 
+regex = re.compile(r'^([0-9]{2}):([0-9]{2}):([0-9]{2})$')
 
-def lambda_handler(event, context):
 
-    # TODO implement
-    req = requests.get('http://www.slrclub.com/bbs/zboard.php?id=free')
-    html = req.text
-    soup = BeautifulSoup(html, 'html.parser')
-    table = soup.find('table', id='bbs_list')
-
-    trs = table.tbody.find_all('tr')
-
+def getExtractData(soup):
+    is_break = False
     data = []
+    table = soup.find('table', id='bbs_list')
+    trs = table.tbody.find_all('tr')
+    next_url = soup.find('table', id='bbs_foot').find(
+        'a', class_="next1")['href']
+
     for tr in trs:
         if tr.find('td', class_='list_num') == None:
+            continue
+        if tr.find('td', class_='list_num').string == None:
             continue
 
         num = tr.find('td', class_='list_num').string
@@ -42,7 +43,11 @@ def lambda_handler(event, context):
         list_date = tr.find('td', class_='list_date').string
         view_cnt = tr.find('td', class_='list_click').string
 
-        writed_at = datetime.today().strftime('%Y-%m-%d ') + list_date
+        if regex.match(list_date) is None:
+            next_url = None
+            break
+        else:
+            writed_at = datetime.today().strftime('%Y-%m-%d ') + list_date
 
         data.append((
             1,
@@ -58,12 +63,34 @@ def lambda_handler(event, context):
             writed_at
         ))
 
-    sql = "insert into posts (site,num, title,description,url,image,like_cnt,view_cnt,comment_cnt,writer, writed_at) values (%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s) ON DUPLICATE KEY UPDATE view_cnt = VALUES(view_cnt), comment_cnt = VALUES(comment_cnt)"
+    save(data)
+    return next_url
 
-    # print(data)
+
+def save(data):
+    curs = conn.cursor()
+    sql = "insert into posts (site,num, title,description,url,image,like_cnt,view_cnt,comment_cnt,writer, writed_at) values (%s, %s, %s, %s,%s, %s, %s,%s, %s, %s, %s) ON DUPLICATE KEY UPDATE view_cnt = VALUES(view_cnt), comment_cnt = VALUES(comment_cnt)"
     curs.executemany(sql, data)
     conn.commit()
     curs.close()
+
+
+def lambda_handler(event, context):
+
+    # TODO implement
+    next_url = '/bbs/zboard.php?id=free&page=714465'
+
+    while True:
+        url = domain + next_url
+        print(url)
+        req = requests.get(url,
+                           headers={'User-agent': 'AdsBot-Google (+http://www.google.com/adsbot.html)'})
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+        next_url = getExtractData(soup)
+        if next_url == None:
+            break
+
     conn.close()
 
     return {'statusCode': 200}
